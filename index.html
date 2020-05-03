@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JQery Adder</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <style>
+        .ExInput{
+            padding-left: 3px;
+            border-radius: 3px;
+        }
+        .refleshButton{
+            margin-left: 7px;
+            height: 30px;
+            padding-top: 3px;
+            text-align: center;
+            width: 40px;
+            padding-left: 11px;
+           
+        }
+        .refleshButton i{
+            color: white;
+            font-size: 16px;
+            padding-bottom: 9px;
+        }
+    </style>
+</head>
+<body style="background-color: gray;">
+<div class="row">
+<div style="width:100%;border-bottom:1px dashed white;text-align: center;background-color: black;position: relative;">
+    <div style="font-size:35px;color:white">JQuery Adder
+        <span style="position: absolute;right: 3%;top:59%;;color:white;font-size:12px;">Fehmi AKSAKAL</span>
+    </div>
+</div>
+
+    <div class="container mt-5" style="background:#333;border-radius: 10px;">
+        <span id="firstEntAmount" style="position: absolute;right: 46%;font-size: 30px;color:white"></span>
+        <button id="addRow" class="btn btn-primary mt-3 mr-3 mb-1">Add Row</button>
+        <div class="row" style="min-height: 190px;">
+            <div class="topRows col-lg-8 col-md-8 col-sm-12">
+                <div class="card-body row paymentInputGroup" style="margin-left: 10px;">
+                    <div class="input-group mb-3 col-lg-4" style="padding-left:5px;padding-right:5px">
+                        <select class="form-control selectPaymentMethod" style="height: 38px" autocomplete="off" data-moneytype='selectBox' required>
+                            <option value="-1">Money Type</option>
+                            <option value="TL">Turkish Lira</option>
+                            <option value="USD">USA Dollar</option>
+                            <option value="EUR">Euro</option>
+                            <option value="GBP">Sterlin</option>
+                        </select>
+                    </div>
+                    <div class="input-group  mb-3 col-lg-2 " style="padding-left:5px;padding-right:5px">
+                        <input type="text" placeholder="Amount" class="form-control MoneyAmount" style="height: 38px" autocomplete="off" required onblur="SadeceRakam(event,false)" onkeypress="return SadeceRakam(event);">
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div>
+                    <span style="color:white">Dolar Excrarate:</span>
+                    <input id="dollar" type="text" value="7,01" data-curVal="7,01" class="ml-2 ExInput moneyFormat" style="width: 50px;" >
+                    <span class="btn btn-warning refleshButton" title="Clear Value">
+                        <i class="fas fa-sync "></i>
+                    </span>
+                </div>
+                <div class="mt-2 mb-2">
+                    <span style="color:white">Euro Excrarate:</span><input id="euro" type="text" value="7,61" data-curVal="7,61" class="ml-3 ExInput moneyFormat" style="width: 50px;">
+                    <span class="btn btn-warning refleshButton" title="Clear Value">
+                        <i class="fas fa-sync "></i>
+                    </span>
+                </div>
+                <div>
+                    <span style="color:white">GBP Excrarate:</span>
+                    <input id="gbp" type="text" value="8,01"  data-curVal="8,01" class="ExInput moneyFormat" style="width: 50px;margin-left: 1.1em;">
+                    <span class="btn btn-warning refleshButton" title="Clear Value">
+                        <i class="fas fa-sync "></i>
+                    </span> 
+                </div>
+            </div>
+            </div>
+        </div>
+</div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<script src="https://kit.fontawesome.com/c6b43fca5c.js" crossorigin="anonymous"></script>
+<script type="text/javascript">
+
+    function DeleteElement(params) {
+        var deletedValue = parseInt(params.parentElement.children[1].children[0].value);
+        var euro = $('#euro').val();
+        var dollar = $('#dollar').val();
+        var gbp = $('#gbp').val();
+        var nowValue = parseFloat($('#firstEntAmount')[0].innerHTML.replace('.',''));
+        var _nowType = params.parentElement.children[0].children[0].value;
+        debugger
+        if (_nowType != "-1" && nowValue > 0 && nowValue != null) {
+                switch (_nowType) {
+                                case "TL":
+                                    deletedValue = parseFloat(deletedValue);
+                                    break;
+                                case "EUR":
+                                    var dgreur = parseFloat(euro.replace(',', '.'));
+                                    var eurSol = dgreur * parseFloat(deletedValue);
+                                    deletedValue = eurSol.toFixed(2);
+                                    break;
+                                case "USD":
+                                    var dgrDlr = parseFloat(dollar.replace(',','.'));
+                                    var dlrSol = dgrDlr * parseFloat(deletedValue);
+                                    deletedValue = dlrSol.toFixed(2);
+                                    break;
+                                case "GBP":
+                                    var dgrGBP = parseFloat(nowValue.replace(',', '.'));
+                                    var gbpSol = dgrGBP * parseFloat(deletedValue);
+                                    deletedValue = gbpSol.toFixed(2);
+                                    break;
+                }
+                var newVal = Math.round(nowValue - deletedValue);
+                $('#firstEntAmount').text(newVal.toLocaleString());
+            }
+        params.parentElement.remove();
+    }
+    function SadeceRakam(e, allowedchars) {
+            var key = e.charCode == undefined ? e.keyCode : e.charCode;
+            if ((/^[0-9]+$/.test(String.fromCharCode(key))) || key == 0 || isPassKey(key, allowedchars)) { return true; }
+            else { return false; }
+    };
+    function isPassKey(key, allowedchars) {
+            if (allowedchars != null) {
+                for (var i = 0; i < allowedchars.length; i++) {
+                    if (allowedchars[i] == String.fromCharCode(key))
+                        return true;
+                }
+            }
+            return false;
+    };
+   
+
+    $(document).ready(function(){
+
+        function takeValue() {
+            var moneyLent = $('.topRows > div').length;
+            var _nowAmount = 0;
+            var euro = $('#euro').val();
+            var dollar = $('#dollar').val();
+            var gbp = $('#gbp').val();
+            $('#firstEntAmount')[0].innerHTML = 0;
+                for (var i = 0; i < moneyLent; i++) {
+                    var _type = $('.topRows')[0].children[i].children[0].children[0].value;
+                    var _moneyAmount = parseInt($('.topRows')[0].children[i].children[1].children[0].value);
+                    _nowMoneyAmount = parseInt($('#firstEntAmount')[0].innerHTML.replace('.',''));
+                    if (_type != "-1" && _moneyAmount != 0 && _moneyAmount > 0) {
+                        switch (_type) {
+                            case "TL":
+                                _nowMoneyAmount += parseFloat(_moneyAmount);
+                                break;
+                            case "EUR":
+                                var dgreur = parseFloat(euro.replace(',', '.'));
+                                var eurSol = dgreur * parseFloat(_moneyAmount).toFixed(2);
+                                _nowMoneyAmount += eurSol;
+                                break;
+                            case "USD":
+                                var dgrDlr = parseFloat(dollar.replace(',','.'));
+                                var dlrSol = dgrDlr * parseFloat(_moneyAmount).toFixed(2);
+                                _nowMoneyAmount += dlrSol;
+                                break;
+                            case "GBP":
+                                var dgrGBP = parseFloat(gbp.replace(',', '.'));
+                                var gbpSol = dgrGBP * parseFloat(_moneyAmount).toFixed(2);
+                               _nowMoneyAmount += gbpSol;
+                                break;
+                        }
+                        $('#firstEntAmount')[0].innerHTML = (Math.round(_nowMoneyAmount.toFixed(2))).toLocaleString();
+                    }
+                }
+        };
+
+        $('#addRow').click(function () {
+            $('.topRows').append('<div class="card-body row paymentInputGroup" style="margin-left: 10px;padding-top: 0px;"><div class="input-group mb-3 col-lg-4" style="padding-left:5px;padding-right:5px"><select class="form-control selectPaymentMethod" style="height: 38px" autocomplete="off" data-moneytype="selectBox" required><option value="-1">Money Type</option><option value="TL">Turkish Lira</option><option value="USD">USA Dollar</option><option value="EUR">Euro</option><option value="GBP">Sterlin</option></select></div><div class="input-group  mb-3 col-lg-2" style="padding-left:5px;padding-right:5px"><input type="text" placeholder="Amount" class="form-control MoneyAmount" style="height: 38px" autocomplete="off" required onblur="SadeceRakam(event,false)" onkeypress="return SadeceRakam(event);"></div><div class="btn btn-danger" style="height: 38px;text-align: center;padding-left: 10px;margin-left: 4px;" onCLick="DeleteElement(this)"><i class="far fa-trash-alt" style="color: white;font-size: 23px;"></i></div></div>');
+        });
+
+        $('.refleshButton').click(function () {
+            $(this).parent()[0].children[1].value = $(this).parent()[0].children[1].dataset.curval; 
+        });
+
+        $(document).on('change','.selectPaymentMethod',function(){
+            takeValue();
+        }); 
+
+        $(document).on('keyup','.MoneyAmount',function(){
+            takeValue();
+        }); 
+
+        $(document).on('keydown', '.moneyFormat', function (e) {
+                // tab, esc, enter
+                if (e.keyCode == 57) e.keyCode = 105;
+
+                if (e.keyCode == 48) e.keyCode = 96;
+
+                if ($.inArray(e.keyCode, [9, 27, 13]) !== -1 ||
+                    // Ctrl+A
+                    (e.keyCode == 65 && e.ctrlKey === true) ||
+                    // home, end, left, right, down, up
+                    (e.keyCode >= 35 && e.keyCode <= 40)) {
+                    return;
+                }
+                e.preventDefault();
+                // backspace & del
+                if ($.inArray(e.keyCode, [8, 46]) !== -1) {
+                    $(this).val('');
+                    return;
+                }
+                var a = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "`"];
+                var n = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
+                var value = $(this).val();
+                var clean = value.replace(/\./g, '').replace(/,/g, '').replace(/^0+/, '');
+
+                var charCode = 0;
+                if (e.keyCode > 48 && e.keyCode < 57) charCode = String.fromCharCode(e.keyCode + 48); else charCode = String.fromCharCode(e.keyCode);
+                var p = $.inArray(charCode, a);
+                if (p !== -1) {
+                    value = clean + n[p];
+                    if (value.length == 2) value = '0' + value;
+                    if (value.length == 1) value = '00' + value;
+                    var formatted = '';
+                    for (var i = 0; i < value.length; i++) {
+                        var sep = '';
+                        if (i == 2) sep = ',';
+                        if (i > 3 && (i) % 3 == 0) sep = '.';
+                        formatted = value.substring(value.length - 1 - i, value.length - i) + sep + formatted;
+                    }
+                    if (formatted.length == 2) $(this).val("0," + formatted); else $(this).val(formatted);
+                }
+                return;
+            });
+    });
+
+</script>
+
+</body>
+</html>
