@@ -7,4 +7,5 @@ This is a simple jquery work. I am solve those questions. How to add element wit
 * Dynamic Html Elements. 
 * Arithmetic processes with JQuery
 
+![JQuery Adder](jqueryAdder.JPG)
 
